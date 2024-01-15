@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven_3.9.4'
+    }
+
+    stages {
+        stage('Build Maven') {
+            steps { 
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/Teja-55/DevOps-Automation']]])
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Build docker image') {
+            steps {
+                script {
+                    sh "docker build -t devops-int-bu:v1 ."
+                }
+            }
+        }
+    } // <-- Added closing bracket for the 'stages' block
+} // <-- Added closing bracket for the 'pipeline' block
